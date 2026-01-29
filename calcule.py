@@ -9,28 +9,23 @@ def formatareTabel(nume, T):
 
 tabelAdunare = []
 for a in range(0, 256):
-    tabelAdunare.append([(a + b) &0xFF for b in range(0, 256)])
+    tabelAdunare.append([(a + b) &0x1FF for b in range(0, 256)])
 tabelAdunare = formatareTabel("tabelAdunare", tabelAdunare)
 
-tabelInmultire = []
+tabelAdunareCuCarry = []
 for a in range(0, 256):
-    tabelInmultire.append([(a + b) &0xFF for b in range(0, 256)])
-tabelInmultire = formatareTabel("tabelInmultire", tabelInmultire)
+    tabelAdunareCuCarry.append([(a + b + 1) &0x1FF for b in range(0, 256)])
+tabelAdunareCuCarry = formatareTabel("tabelAdunareCuCarry", tabelAdunareCuCarry)
 
 tabelScadere = []
 for a in range(0, 256):
     tabelScadere.append([(a - b) &0xFF for b in range(0, 256)])
 tabelScadere = formatareTabel("tabelScadere", tabelScadere)
 
-tabelImpartire = []
+tabelScadereCuCarry = []
 for a in range(0, 256):
-    tabelImpartire.append([(a // b) &0xFF if b != 0 else 0xFFFFFFFF for b in range(0, 256)])
-tabelImpartire = formatareTabel("tabelImpartire", tabelImpartire)
-
-tabelModulo = []
-for a in range(0, 256):
-    tabelModulo.append([(a % b) &0xFF if b != 0 else 0xFFFFFFFF for b in range(0, 256)])
-tabelModulo = formatareTabel("tabelModulo", tabelModulo)
+    tabelScadereCuCarry.append([(a - b - 1) &0xFF for b in range(0, 256)])
+tabelScadereCuCarry = formatareTabel("tabelScadereCuCarry", tabelScadereCuCarry)
 
 tabelAnd = []
 for a in range(0, 256):
@@ -47,13 +42,13 @@ for a in range(0, 256):
     tabelXor.append([(a ^ b) &0xFF for b in range(0, 256)])
 tabelXor = formatareTabel("tabelXor", tabelXor)
 
-tabelMod10 = [str(a % 10) for a in range(0, 0xFFFF)]
-tabelMod10 = "tabelMod10: .long " + " ".join(tabelMod10)
-
 tabelCMP = []
 for a in range(0, 256):
     tabelCMP.append([0 if a < b else (1 if a == b else 2) for b in range(0, 256)])
 tabelCMP = formatareTabel("tabelCMP", tabelCMP)
+
+tabelIsZero = "tabeInc: .long " + " ".join(["1"] + ["0"] * 0xFFFE)
+tabelIsFFFF = "tabeInc: .long " + " ".join(["0"] * 0xFFFE + ["1"])
 
 tabeInc = [str((a+1) & 0xFFFF) for a in range(0, 0xFFFF)]
 tabeInc = "tabeInc: .long " + " ".join(tabeInc)
@@ -62,7 +57,6 @@ tabeDec = [str((a-1) & 0xFFFF) for a in range(0, 0xFFFF)]
 tabeDec = "tabeDec: .long " + " ".join(tabeDec)
 
 with open("tabele", "w") as g:
-    output = "\n".join([offsetTabel(), tabelAdunare, tabeDec, tabeInc,
-    tabelAnd, tabelCMP, tabelImpartire, tabelInmultire, tabelMod10, tabelModulo, tabelOr,
-    tabelScadere, tabelXor])
+    output = "\n".join([offsetTabel(), tabelIsFFFF, tabelIsZero, tabelAdunare, tabelAdunareCuCarry, tabeDec,
+    tabeInc, tabelAnd, tabelCMP, tabelOr, tabelScadere, tabelScadereCuCarry, tabelXor])
     g.write(output)
