@@ -61,9 +61,6 @@ keyword_dict = {
 def MOV(operanzi):
     return f"mov {operanzi[0]}, {operanzi[1]}"
 
-def LEA(operanzi):
-    pass
-
 def ADD(operanzi):
     # trebuie "calculat" array-uri de pointeri la etapa de init
     return f"""mov Carry, 0
@@ -514,5 +511,5 @@ for i, linie in enumerate(c):
 
 codul = []
 for op in t:
-    
+
 # avem toate liniile categorizate
