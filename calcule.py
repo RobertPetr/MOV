@@ -55,16 +55,17 @@ tabeInc = "tabeInc: .long " + " ".join(tabeInc)
 
 tabelCarryAdd = formatareTabel("tabelCarryAdd", [[str((a+b)>>8) for b in range(0, 255)] for a in range(0, 255)])
 tabelCarryAddCuCarry = formatareTabel("tabelCarryAddCuCarry",
-        [[[str((a+b + 1)>>8) for b in range(0, 255)] for a in range(0, 255)])
+        [[str((a+b + 1)>>8) for b in range(0, 255)] for a in range(0, 255)])
 
-tabelCarryAdd = formatareTabel("tabelCarryAdd", [[str((a+b)>>8) for b in range(0, 255)] for a in range(0, 255)])
-tabelCarryAddCuCarry = formatareTabel("tabelCarryAddCuCarry",
-        [[[str((a+b + 1)>>8) for b in range(0, 255)] for a in range(0, 255)])
+tabelCarrySub = formatareTabel("tabelCarrySub", [["1" if a < b else "0" for b in range(0, 255)] for a in range(0, 255)])
+tabelCarrySubCuCarry = formatareTabel("tabelCarrySubCuCarry",
+        [["1" if a < b + 1 else "0" for b in range(0, 255)] for a in range(0, 255)])
 
 tabeDec = [str((a-1) & 0xFFFF) for a in range(0, 0xFFFF)]
 tabeDec = "tabeDec: .long " + " ".join(tabeDec)
 
 with open("tabele", "w") as g:
-    output = "\n".join([offsetTabel(), tabelIsFFFF, tabelIsZero, tabelAdunare, tabelAdunareCuCarry, tabeDec,
-    tabeInc, tabelAnd, tabelCMP, tabelOr, tabelScadere, tabelScadereCuCarry, tabelXor]) + "\n"
+    output = "\n".join([offsetTabel(), tabelIsFFFF, tabelIsZero, tabelAdunare, tabelAdunareCuCarry, tabelCarryAdd,
+    tabelCarryAddCuCarry, tabeDec, tabeInc, tabelAnd, tabelCMP, tabelOr, tabelScadere, tabelScadereCuCarry,
+    tabelCarrySub, tabelCarrySubCuCarry, tabelXor]) + "\n"
     g.write(output)
