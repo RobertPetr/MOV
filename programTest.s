@@ -1,6 +1,7 @@
-data
+.data
     n: .long 6
     v: .word 10, 20, 40, 60, 100, 5
+
 .text
 .global main
 

@@ -6,11 +6,11 @@ f.close()
 
 poz = p.find(".global")
 et_start = p[1+p.find(' ', poz): p.find('\n', poz)].strip() + ":"
-etichete = [et_start]
+etichete = [(0, et_start)]
 keyword_dict = {
     "mov": 1,
     "movl": 1,
-    "lea": 2,
+    "lea": 0xAA02,
     "int": 0xFFFE,
     "call": 0xFFFF,
     "add": 3,
@@ -66,7 +66,7 @@ def LEA(operanzi):
 
 def ADD(operanzi):
     # trebuie "calculat" array-uri de pointeri la etapa de init
-    return f"mov Carry, 0
+    return f"""mov Carry, 0
     mov Zero, 1
     mov eax, add8[BYTE Carry]
     mov eax, [eax + BYTE {operanzi[1]}]
@@ -148,7 +148,345 @@ def ADD(operanzi):
     mov Zero, dl
 
     mov BYTE {operanzi[0]} + 3, bl
-    "
+    """
+
+def SUB(operanzi):
+    # trebuie "calculat" array-uri de pointeri la etapa de init
+    return f"""mov Carry, 0
+    mov Zero, 1
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]}, bl
+
+
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 1, bl
+
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 2, bl
+
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 3, bl
+    """
+
+def CMP(operanzi):
+    # trebuie "calculat" array-uri de pointeri la etapa de init
+    return f"""mov Carry, 0
+    mov Zero, 1
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+
+    mov eax, sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_sub8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+    """
+def AND(operanzi):
+    # trebuie "calculat" array-uri de pointeri la etapa de init
+    return f"""mov Carry, 0
+    mov Zero, 1
+    mov eax, and8[BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]}, bl
+
+
+    mov eax, and8[BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 1, bl
+
+    mov eax, and8[BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 2, bl
+
+    mov eax, and8[BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 3, bl
+    """
+
+def OR(operanzi):
+    # trebuie "calculat" array-uri de pointeri la etapa de init
+    return f"""mov Carry, 0
+    mov Zero, 1
+    mov eax, or8[BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]}, bl
+
+
+    mov eax, or8[BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 1, bl
+
+    mov eax, or8[BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 2, bl
+
+    mov eax, or8[BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 3, bl
+    """
+def XOR(operanzi):
+    # trebuie "calculat" array-uri de pointeri la etapa de init
+    return f"""mov Carry, 0
+    mov Zero, 1
+    mov eax, xor8[BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]}, bl
+
+
+    mov eax, xor8[BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 1, bl
+
+    mov eax, xor8[BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 2, bl
+
+    mov eax, xor8[BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 3, bl
+    """
 
 c = p[9+len(et_start)+poz:]
 c = c.split("\n")
@@ -159,16 +497,20 @@ Flags = {
     "OF": 0,
     "SF": 0,
 }
-for linie in c:
-    linie = linie[:linie.find(";")].strip()
+for i, linie in enumerate(c):
+    if linie.find(";") != -1:
+        linie = linie[:linie.find(";")].strip()
+    else:
+        linie = linie.strip()
     if linie[-1] == ":":
-        etichete.append(linie)
+        etichete.append((i, linie))
         continue
     com = linie.split()
     if com[0] not in keyword_dict:
         print(f"{com[0]} nu e recunoscut")
         exit(1)
     op = keyword_dict[com[0]]
-    t.append((op, com[1:]))
+    t.append((op, [x.replace(',', '') for x in com[1:]]))
+
 
 # avem toate liniile categorizate
