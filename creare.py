@@ -512,5 +512,7 @@ for i, linie in enumerate(c):
     op = keyword_dict[com[0]]
     t.append((op, [x.replace(',', '') for x in com[1:]]))
 
-
+codul = []
+for op in t:
+    
 # avem toate liniile categorizate

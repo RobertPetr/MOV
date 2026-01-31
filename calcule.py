@@ -42,16 +42,9 @@ for a in range(0, 256):
     tabelXor.append([(a ^ b) &0xFF for b in range(0, 256)])
 tabelXor = formatareTabel("tabelXor", tabelXor)
 
-tabelCMP = []
-for a in range(0, 256):
-    tabelCMP.append([0 if a < b else (1 if a == b else 2) for b in range(0, 256)])
-tabelCMP = formatareTabel("tabelCMP", tabelCMP)
 
 tabelIsZero = "tabelIsZero: .long " + " ".join(["1"] + ["0"] * 0xFFFE)
 tabelIsFFFF = "tabelIsFFFF: .long " + " ".join(["0"] * 0xFFFE + ["1"])
-
-tabeInc = [str((a+1) & 0xFFFF) for a in range(0, 0xFFFF)]
-tabeInc = "tabeInc: .long " + " ".join(tabeInc)
 
 tabelCarryAdd = formatareTabel("tabelCarryAdd", [[str((a+b)>>8) for b in range(0, 255)] for a in range(0, 255)])
 tabelCarryAddCuCarry = formatareTabel("tabelCarryAddCuCarry",
@@ -66,6 +59,6 @@ tabeDec = "tabeDec: .long " + " ".join(tabeDec)
 
 with open("tabele", "w") as g:
     output = "\n".join([offsetTabel(), tabelIsFFFF, tabelIsZero, tabelAdunare, tabelAdunareCuCarry, tabelCarryAdd,
-    tabelCarryAddCuCarry, tabeDec, tabeInc, tabelAnd, tabelCMP, tabelOr, tabelScadere, tabelScadereCuCarry,
+    tabelCarryAddCuCarry, tabelAnd, tabelOr, tabelScadere, tabelScadereCuCarry,
     tabelCarrySub, tabelCarrySubCuCarry, tabelXor]) + "\n"
     g.write(output)
