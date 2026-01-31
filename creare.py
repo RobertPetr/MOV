@@ -17,10 +17,10 @@ keyword_dict = {
     "addl": 3,
     "sub": 4,
     "subl": 4,
-    "push": 5,
-    "pushl": 5,
-    "pop": 6,
-    "popl": 6,
+    "push": 0xAA05,
+    "pushl": 0xAA05,
+    "pop": 0xAA06,
+    "popl": 0xAA06,
     "cmp": 7,
     "jmp": 0xFF00,
     "jl": 0xFF01,
@@ -45,9 +45,9 @@ keyword_dict = {
     "incl": 12,
     "dec": 13,
     "decl": 13,
-    "imul": 14,
-    "idivl": 15,
-    "idiv": 15,
+    "imul": 0xAA14,
+    "idivl": 0xAA15,
+    "idiv": 0xAA15,
     "shll": 16,
     "shl": 16,
     "sal": 16,
@@ -58,9 +58,107 @@ keyword_dict = {
     "sarl": 17
 }
 
+def MOV(operanzi):
+    return f"mov {operanzi[0]}, {operanzi[1]}"
+
+def LEA(operanzi):
+    pass
+
+def ADD(operanzi):
+    # trebuie "calculat" array-uri de pointeri la etapa de init
+    return f"mov Carry, 0
+    mov Zero, 1
+    mov eax, add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]}]
+    mov eax, [eax + BYTE {operanzi[0]}]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]}, bl
+
+
+    mov eax, add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 1]
+    mov eax, [eax + BYTE {operanzi[0]} + 1]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 1, bl
+
+    mov eax, add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 2]
+    mov eax, [eax + BYTE {operanzi[0]} + 2]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 2, bl
+
+    mov eax, add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    
+    mov bl, al
+
+    mov eax, carry_add8[BYTE Carry]
+    mov eax, [eax + BYTE {operanzi[1]} + 3]
+    mov eax, [eax + BYTE {operanzi[0]} + 3]
+    mov al, [eax]
+    mov Carry, al
+
+    mov eax, is_zero[bl]
+    mov edx, and8[Zero]
+    mov edx, [edx + eax]
+    mov Zero, dl
+
+    mov BYTE {operanzi[0]} + 3, bl
+    "
+
 c = p[9+len(et_start)+poz:]
 c = c.split("\n")
 t = []
+Flags = {
+    "ZF": 0,
+    "CF": 0,
+    "OF": 0,
+    "SF": 0,
+}
 for linie in c:
     linie = linie[:linie.find(";")].strip()
     if linie[-1] == ":":
@@ -71,7 +169,6 @@ for linie in c:
         print(f"{com[0]} nu e recunoscut")
         exit(1)
     op = keyword_dict[com[0]]
-    if (op & 0xFF00) == 0xFF00:
-        t.append((op, com[1:]))
-    else:
-        
+    t.append((op, com[1:]))
+
+# avem toate liniile categorizate
