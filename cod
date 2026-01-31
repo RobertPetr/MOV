@@ -1,0 +1,55 @@
+inc a:
+add a, 1
+
+dec a:
+sub a, 1
+
+not a:
+xor a, 0xFFFFFFFF
+
+lea a, [b + c * const + off]:
+mov a, b
+add a, off
+add a, c
+add a, c
+add a, c
+add a, c
+add a, c
+... (const ori)
+add a, c
+
+push x:
+sub esp, 4
+mov [esp], x
+
+pop x:
+mov x, [esp]
+add esp, 4
+
+mul a, b:
+mov eax, 0
+mov ecx, b
+l:
+jcc eq, ecx, 0, exit
+add eax, a
+dec ecx
+jmp l
+exit:
+
+div a, b:
+jcc neq, b, 0, cod
+mov eax, 1
+mov ebx, 1
+exit()
+
+cod:
+mov edx, a
+mov eax, 0
+
+l:
+jcc below, edx, b, exit
+sub edx, b
+inc eax
+jmp l
+
+exit:

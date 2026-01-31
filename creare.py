@@ -511,5 +511,3 @@ for i, linie in enumerate(c):
 
 codul = []
 for op in t:
-
-# avem toate liniile categorizate
